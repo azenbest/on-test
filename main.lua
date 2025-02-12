@@ -129,7 +129,7 @@ MainSection:CreateButton({
 
 
       local successScript, result = pcall(function()
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/azenbest/test-1-part-1/main/main.lua", true))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/azenbest/on-test/refs/heads/main/main.lua", true))()
         end)
 
         if successScript then

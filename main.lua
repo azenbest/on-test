@@ -24,47 +24,36 @@ local Window = Library:CreateWindow{
 local Tabs = {
 	Main = Window:CreateTab{
 		Title = "Main",
-		Icon = "phosphor-house-bold"
 	},
 	AutoBuy = Window:CreateTab{
 		Title = "Auto Buy",
-		Icon = "phosphor-shopping-cart-bold"
 	},
 	AutoStuff = Window:CreateTab{
 		Title = "Auto Stuff",
-		Icon = "phosphor-robot-bold"
 	},
 	AutoFarm = Window:CreateTab{
 		Title = "Auto Farm",
-		Icon = "phosphor-robot-bold"
 	},
 	Rebirth = Window:CreateTab{
 		Title = "Rebirth",
-		Icon = "phosphor-arrows-clockwise-bold"
 	},
 	Killer = Window:CreateTab{
 		Title = "Killer",
-		Icon = "phosphor-sword-bold"
 	},
 	Crystals = Window:CreateTab{
 		Title = "Crystals",
-		Icon = "phosphor-diamond-bold"
 	},
 	Teleport = Window:CreateTab{
 		Title = "Teleport",
-		Icon = "phosphor-dog-bold"
 	},
 	Stats = Window:CreateTab{
 		Title = "Stats",
-		Icon = "phosphor-sparkle-bold"
 	},
 	Misc = Window:CreateTab{
 		Title = "Misc",
-		Icon = "phosphor-map-pin-bold"
 	},
 	Settings = Window:CreateTab{
 		Title = "Settings",
-		Icon = "phosphor-sliders-bold"
 	}
 }
 

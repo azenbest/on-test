@@ -806,7 +806,7 @@ local GrindToggle = Tabs.Rebirth:CreateToggle("SpeedGrind", {
 			task.spawn(function()
 				while isGrinding do
 					game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
-					task.wait()
+					task.wait(0.000001)
 				end
 			end)
 		end

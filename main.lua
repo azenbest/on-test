@@ -719,65 +719,6 @@ local kingTeleportToggle = Tabs.Rebirth:CreateToggle("KingTeleport", {
 	end
 })
 
-local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
-	Title = "Fast Rebirths",
-	Default = false,
-	Callback = function(Value)
-		isRunning = Value
-		getgenv().lift = Value
-
-		if not Value then
-			unequipAllPets()
-			return
-		end
-		
-		unequipAllPets()
-		task.wait(0.1)
-		equipUniquePet("Guardian Néon")
-		task.spawn(function()
-			while isRunning do
-				local player = game.Players.LocalPlayer
-				local rebirths = player.leaderstats.Rebirths.Value
-				local rebirthCost = 10000 + (5000 * rebirths)
-				if player.ultimatesFolder:FindFirstChild("Golden Rebirth") then
-					local goldenRebirths = player.ultimatesFolder["Golden Rebirth"].Value
-					rebirthCost = math.floor(rebirthCost * (1 - (goldenRebirths * 0.1)))
-				end
-				
-				local machine = findMachine("Jungle Bar Lift")
-				if machine and machine:FindFirstChild("interactSeat") then
-					local character = game.Players.LocalPlayer.Character
-					if character and character:FindFirstChild("HumanoidRootPart") then
-						character.HumanoidRootPart.CFrame = machine.interactSeat.CFrame * CFrame.new(0, 3, 0)
-						task.wait(0.5)
-						pressE()
-					end
-				end
-				
-				while isRunning and player.leaderstats.Strength.Value < rebirthCost do
-					game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
-					task.wait(0.0001)
-				end
-				
-				if player.leaderstats.Strength.Value >= rebirthCost then
-					unequipAllPets()
-					task.wait(0.2)
-					equipUniquePet("Tribal Overlord")
-					task.wait(0.3) 
-
-					game:GetService("ReplicatedStorage").rEvents.rebirthRemote:InvokeServer("rebirthRequest")
-
-					unequipAllPets()
-					task.wait(0.2)
-					equipUniquePet("Guardian Néon")
-				end
-				if not isRunning then break end
-				task.wait(0.1)
-			end
-		end)
-	end
-})
-
 local Toggle = Tabs.Rebirth:CreateToggle("FrameToggle", {
 	Title = "Hide All Frames",
 	Description = "Toggle ON to hide all game frames",
@@ -788,27 +729,6 @@ local Toggle = Tabs.Rebirth:CreateToggle("FrameToggle", {
 			if obj.Name:match("Frame$") then
 				obj.Visible = not Value
 			end
-		end
-	end
-})
-
-local GrindToggle = Tabs.Rebirth:CreateToggle("SpeedGrind", {
-	Title = "Speed Grind (No Rebirth)",
-	Default = false,
-	Callback = function(Value)
-		local isGrinding = Value
-		if not Value then
-			unequipAllPets()
-			return
-		end
-		equipUniquePet("Guardian Néon")
-		for i = 1, 12 do
-			task.spawn(function()
-				while isGrinding do
-					game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
-					task.wait(0.000001)
-				end
-			end)
 		end
 	end
 })

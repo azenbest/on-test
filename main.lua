@@ -14,16 +14,18 @@ local function safeLoad(url, name)
     return result
 end
 
-print("🔄 Loading main script...")
-local success, allowed = pcall(function()
+local success, result = pcall(function()
     return loadstring(game:HttpGet("https://raw.githubusercontent.com/azenbest/on-test/refs/heads/main/main.lua"))()
 end)
 
 if not success then
-    warn("❌ Failed to load main script: " .. tostring(allowed))
-    game.Players.LocalPlayer:Kick("❌ Unable to load the main script\nError: " .. tostring(allowed))
+    warn("❌ Error loading main script: " .. tostring(result))
+    game.Players.LocalPlayer:Kick("❌ Main script failed to load\nError: " .. tostring(result))
     return
 end
+
+print("✅ Main script loaded successfully!")
+
 
 print("✅ Main script loaded successfully!")
 

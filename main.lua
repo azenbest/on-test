@@ -6,6 +6,7 @@ _G.MainScriptLoaded = true
 
 local whitelist = {
    [2932844883] = true
+   [2002271267] = true
 }
 
 local player = game.Players.LocalPlayer

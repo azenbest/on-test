@@ -4,6 +4,22 @@ if _G.MainScriptLoaded then
 end
 _G.MainScriptLoaded = true
 
+
+local whitelist = {
+    [] = true
+}
+
+local player = game.Players.LocalPlayer
+local playerId = player.UserId
+
+if not whitelist[playerId] then
+    warn("❌ Access denied for Player ID: " .. playerId)
+    player:Kick("🚫 You are not whitelisted to use this script.")
+    return
+end
+
+print("✅ Player ID " .. playerId .. " is whitelisted. Loading script...")
+
 local function safeLoad(url, name)
     print("🔄 Loading: " .. name)
     local success, result = pcall(function()
@@ -19,7 +35,6 @@ local function safeLoad(url, name)
     return result
 end
 
-
 local mainScriptUrl = "https://raw.githubusercontent.com/azenbest/on-test/main/main.lua"
 local mainSuccess, mainResult = pcall(function()
     return loadstring(game:HttpGet(mainScriptUrl))()
@@ -27,12 +42,11 @@ end)
 
 if not mainSuccess then
     warn("❌ Error loading main script: " .. tostring(mainResult))
-    game.Players.LocalPlayer:Kick("❌ Main script failed to load\nError: " .. tostring(mainResult))
+    player:Kick("❌ Main script failed to load\nError: " .. tostring(mainResult))
     return
 end
 
 print("✅ Main script loaded successfully!")
-
 
 local Library = safeLoad("https://raw.githubusercontent.com/azenbest/Fluent-Renewed/main/Fluent.lua", "Fluent.lua")
 local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "SaveManager.luau")
@@ -44,7 +58,6 @@ if not (Library and SaveManager and InterfaceManager) then
 end
 
 print("✅ All libraries loaded successfully!")
-
 
 local Window = Library:CreateWindow{
     Title = "Private Script Best",

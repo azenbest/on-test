@@ -4,28 +4,22 @@ if _G.MainScriptLoaded then
 end
 _G.MainScriptLoaded = true
 
-local whitelist = {  } 
+local whitelist = {
+    [2932844883] = true 
+}
 
 local player = game.Players.LocalPlayer
 local playerId = player.UserId
 
-print("👤 Player ID détecté:", playerId)
+print("👀 Checking Player ID: " .. playerId)
 
-local isWhitelisted = false
-for _, id in ipairs(whitelist) do
-    if id == playerId then
-        isWhitelisted = true
-        break
-    end
-end
-
-if not isWhitelisted then
-    warn("❌ Accès refusé pour l'ID:", playerId)
-    player:Kick("🚫 Vous n'êtes pas autorisé à utiliser ce script.")
+if not whitelist[playerId] then
+    warn("❌ Access denied for Player ID: " .. playerId)
+    player:Kick("🚫 You are not whitelisted to use this script.")
     return
+else
+    print("✅ Player ID " .. playerId .. " is whitelisted. Loading script...")
 end
-
-print("✅ ID " .. playerId .. " autorisé. Chargement du script...")
 
 local function safeLoad(url, name)
     print("🔄 Chargement: " .. name)

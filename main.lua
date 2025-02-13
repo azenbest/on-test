@@ -730,10 +730,10 @@ local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
 			unequipAllPets()
 			return
 		end
-		-- Initial setup when toggled on
+		
 		unequipAllPets()
 		task.wait(0.1)
-		equipUniquePet("Swift Samurai")
+		equipUniquePet("Guardian Néon")
 		task.spawn(function()
 			while isRunning do
 				local player = game.Players.LocalPlayer
@@ -743,7 +743,7 @@ local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
 					local goldenRebirths = player.ultimatesFolder["Golden Rebirth"].Value
 					rebirthCost = math.floor(rebirthCost * (1 - (goldenRebirths * 0.1)))
 				end
-				-- Teleport to Jungle Bar Lift
+				
 				local machine = findMachine("Jungle Bar Lift")
 				if machine and machine:FindFirstChild("interactSeat") then
 					local character = game.Players.LocalPlayer.Character
@@ -753,23 +753,23 @@ local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
 						pressE()
 					end
 				end
-				-- Auto rep until reaching rebirth cost
+				
 				while isRunning and player.leaderstats.Strength.Value < rebirthCost do
 					game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
 					task.wait(0.0001)
 				end
-				-- When strength requirement met, perform rebirth sequence
+				
 				if player.leaderstats.Strength.Value >= rebirthCost then
 					unequipAllPets()
 					task.wait(0.2)
 					equipUniquePet("Tribal Overlord")
-					task.wait(0.3)  -- Increased wait time to ensure all pets are equipped
+					task.wait(0.3) 
 
 					game:GetService("ReplicatedStorage").rEvents.rebirthRemote:InvokeServer("rebirthRequest")
 
 					unequipAllPets()
 					task.wait(0.2)
-					equipUniquePet("Swift Samurai")
+					equipUniquePet("Guardian Néon")
 				end
 				if not isRunning then break end
 				task.wait(0.1)
@@ -801,7 +801,7 @@ local GrindToggle = Tabs.Rebirth:CreateToggle("SpeedGrind", {
 			unequipAllPets()
 			return
 		end
-		equipUniquePet("Swift Samurai")
+		equipUniquePet("Guardian Néon")
 		for i = 1, 12 do
 			task.spawn(function()
 				while isGrinding do

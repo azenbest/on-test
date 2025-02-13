@@ -62,7 +62,7 @@ end
 print("✅ Toutes les bibliothèques ont été chargées avec succès!")
 
 local Window = Library:CreateWindow{
-    Title = "Private Script Best",
+    Title = "Private Script beta ",
     SubTitle = "By Azen7010",
     TabWidth = 125,
     Size = UDim2.fromOffset(830, 525),

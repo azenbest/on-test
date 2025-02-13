@@ -1687,7 +1687,7 @@ local function equipBestPet(category)
     for _, pet in pairs(backpack:GetChildren()) do
         if pet:IsA("Tool") and pet:FindFirstChild("Rarity") then
             local rarity = pet.Rarity.Value
-            if category == "training" and rarity == "Neon" then
+            if category == "training" and rarity == "Guardien Néon" then
                 pet.Parent = player.Character  
                 task.wait(0.1)
             elseif category == "rebirth" and rarity == "Legendary" then
@@ -1763,28 +1763,13 @@ local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
     end
 })
 
-
-local Toggle = Tabs.Rebirth:CreateToggle("FrameToggle", {
-	Title = "Hide All Frames",
-	Description = "Toggle ON to hide all game frames",
-	Default = false,
-	Callback = function(Value)
-		local rSto = game:GetService("ReplicatedStorage")
-		for _, obj in pairs(rSto:GetChildren()) do
-			if obj.Name:match("Frame$") then
-				obj.Visible = not Value
-			end
-		end
-	end
-})
-
 local function equipBestNeonPet()
     local player = game.Players.LocalPlayer
     local backpack = player.Backpack
 
     for _, pet in pairs(backpack:GetChildren()) do
         if pet:IsA("Tool") and pet:FindFirstChild("Rarity") then
-            if pet.Rarity.Value == "Neon" then
+            if pet.Rarity.Value == "Guardien Néon" then
                 pet.Parent = player.Character  
                 task.wait(0.1)
                 return
@@ -1811,7 +1796,7 @@ local GrindToggle = Tabs.Rebirth:CreateToggle("SpeedGrind", {
         task.spawn(function()
             while isGrinding do
                 game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
-                task.wait(0.005)  
+                task.wait(0.01)  
             end
         end)
     end

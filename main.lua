@@ -26,9 +26,6 @@ end
 
 print("✅ Main script loaded successfully!")
 
-
-print("✅ Main script loaded successfully!")
-
 local Library = safeLoad("https://raw.githubusercontent.com/azenbest/Fluent-Renewed/refs/heads/main/Fluent.lua", "Fluent.lua")
 local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "SaveManager.luau")
 local InterfaceManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau", "InterfaceManager.luau")

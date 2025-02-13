@@ -4,73 +4,72 @@ if _G.MainScriptLoaded then
 end
 _G.MainScriptLoaded = true
 
-local whitelist = {
-    [2932844883] = true
-    [2002271267] = true
-}
+local whitelist = { 2932844883 } 
 
 local player = game.Players.LocalPlayer
 local playerId = player.UserId
 
-print("👀 Checking Player ID: " .. playerId)
 
-if not whitelist[playerId] then
-    warn("❌ Access denied for Player ID: " .. playerId)
-    player:Kick("🚫 You are not whitelisted to use this script.")
-    return
-else
-    print("✅ Access granted to: " .. playerId .. ". Loading script...")
+print("👤 Player ID détecté:", playerId)
+
+local isWhitelisted = false
+for _, id in ipairs(whitelist) do
+    if id == playerId then
+        isWhitelisted = true
+        break
+    end
 end
 
+if not isWhitelisted then
+    warn("❌ Accès refusé pour l'ID:", playerId)
+    player:Kick("🚫 Vous n'êtes pas autorisé à utiliser ce script.")
+    return
+end
+
+print("✅ ID " .. playerId .. " autorisé. Chargement du script...")
+
 local function safeLoad(url, name)
-    print("🔄 Loading: " .. name)
+    print("🔄 Chargement: " .. name)
     local success, result = pcall(function()
-        return loadstring(game:HttpGet(url, true))()
+        return loadstring(game:HttpGet(url))()
     end)
 
     if not success then
-        warn("❌ Failed to load: " .. name .. " - " .. tostring(result))
+        warn("❌ Échec du chargement: " .. name .. " - " .. tostring(result))
         return nil
     end
 
-    print("✅ " .. name .. " loaded successfully!")
+    print("✅ " .. name .. " chargé avec succès!")
     return result
 end
 
 local mainScriptUrl = "https://raw.githubusercontent.com/azenbest/on-test/main/main.lua"
-print("🔍 Checking main script content...")
-local mainScriptContent = game:HttpGet(mainScriptUrl, true)
+local mainSuccess, mainResult = pcall(function()
+    return loadstring(game:HttpGet(mainScriptUrl))()
+end)
 
-if not mainScriptContent or mainScriptContent == "" then
-    warn("❌ Main script is empty or could not be loaded!")
-else
-    print("✅ Main script content loaded successfully.")
-    local mainSuccess, mainResult = pcall(function()
-        return loadstring(mainScriptContent)()
-    end)
-
-    if not mainSuccess then
-        warn("❌ Error loading the main script: " .. tostring(mainResult))
-        
-    else
-        print("✅ Main script executed successfully!")
-    end
+if not mainSuccess then
+    warn("❌ Erreur lors du chargement du script principal: " .. tostring(mainResult))
+    player:Kick("❌ Échec du chargement du script principal\nErreur: " .. tostring(mainResult))
+    return
 end
+
+print("✅ Script principal chargé avec succès!")
 
 local Library = safeLoad("https://raw.githubusercontent.com/azenbest/Fluent-Renewed/main/Fluent.lua", "Fluent.lua")
 local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "SaveManager.luau")
 local InterfaceManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau", "InterfaceManager.luau")
 
 if not (Library and SaveManager and InterfaceManager) then
-    warn("❌ One or more libraries failed to load. Stopping script.")
+    warn("❌ Une ou plusieurs bibliothèques n'ont pas pu être chargées. Arrêt du script.")
     return
 end
 
-print("✅ All required libraries loaded successfully!")
+print("✅ Toutes les bibliothèques ont été chargées avec succès!")
 
 
 local Window = Library:CreateWindow{
-    Title = "Private Script Beta",
+    Title = "Private Script Best",
     SubTitle = "By Azen7010",
     TabWidth = 125,
     Size = UDim2.fromOffset(830, 525),
@@ -80,6 +79,7 @@ local Window = Library:CreateWindow{
     Theme = "VSC Dark High Contrast",
     MinimizeKey = Enum.KeyCode.RightControl
 }
+
 
 
 local MainSection = Tabs.Main:CreateSection("Basic Controls")

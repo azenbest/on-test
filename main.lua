@@ -1742,7 +1742,7 @@ local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
                     task.wait(0.05) 
                 end
 
-                -- Rebirth
+         
                 if player.leaderstats.Strength.Value >= rebirthCost then
                     unequipAllPets()
                     task.wait(0.2)
@@ -1778,26 +1778,45 @@ local Toggle = Tabs.Rebirth:CreateToggle("FrameToggle", {
 	end
 })
 
+local function equipBestNeonPet()
+    local player = game.Players.LocalPlayer
+    local backpack = player.Backpack
+
+    for _, pet in pairs(backpack:GetChildren()) do
+        if pet:IsA("Tool") and pet:FindFirstChild("Rarity") then
+            if pet.Rarity.Value == "Neon" then
+                pet.Parent = player.Character  
+                task.wait(0.1)
+                return
+            end
+        end
+    end
+end
+
 local GrindToggle = Tabs.Rebirth:CreateToggle("SpeedGrind", {
-	Title = "Speed Grind (No Rebirth)",
-	Default = false,
-	Callback = function(Value)
-		local isGrinding = Value
-		if not Value then
-			unequipAllPets()
-			return
-		end
-		equipUniquePet("Swift Samurai")
-		for i = 1, 12 do
-			task.spawn(function()
-				while isGrinding do
-					game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
-					task.wait()
-				end
-			end)
-		end
-	end
+    Title = "Speed Grind (No Rebirth)",
+    Default = false,
+    Callback = function(Value)
+        local isGrinding = Value
+
+        if not Value then
+            unequipAllPets()
+            return
+        end
+
+        unequipAllPets()
+        task.wait(0.1)
+        equipBestNeonPet()  
+
+        task.spawn(function()
+            while isGrinding do
+                game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
+                task.wait(0.005)  
+            end
+        end)
+    end
 })
+
 
 local currentRadius = 75
 local RadiusInput = Tabs.Killer:CreateInput("RadiusInput", {

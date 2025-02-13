@@ -15,53 +15,49 @@ print("👀 Checking Player ID: " .. playerId)
 
 if not whitelist[playerId] then
     warn("❌ Access denied for Player ID: " .. playerId)
-    player:Kick("🚫 You are not whitelisted to use this script.")
+    player:Kick("🚫 You are not authorized to use this script.")
     return
 else
-    print("✅ Player ID " .. playerId .. " is whitelisted. Loading script...")
+    print("✅ Access granted to: " .. playerId .. ". Loading script...")
 end
 
 local function safeLoad(url, name)
-    print("🔄 Chargement: " .. name)
+    print("🔄 Loading: " .. name)
     local success, result = pcall(function()
-        return loadstring(game:HttpGet(url))()
+        return loadstring(game:HttpGet(url, true))()
     end)
 
     if not success then
-        warn("❌ Échec du chargement: " .. name .. " - " .. tostring(result))
+        warn("❌ Failed to load: " .. name .. " - " .. tostring(result))
         return nil
     end
 
-    print("✅ " .. name .. " chargé avec succès!")
+    print("✅ " .. name .. " loaded successfully!")
     return result
 end
 
 local mainScriptUrl = "https://raw.githubusercontent.com/azenbest/on-test/main/main.lua"
-local mainSuccess, mainResult = pcall(function()
-    return loadstring(game:HttpGet(mainScriptUrl))()
-end)
+local mainScript = safeLoad(mainScriptUrl, "Main Script")
 
-if not mainSuccess then
-    warn("❌ Erreur lors du chargement du script principal: " .. tostring(mainResult))
-    player:Kick("❌ Échec du chargement du script principal\nErreur: " .. tostring(mainResult))
+if not mainScript then
+    warn("❌ Failed to load the main script.")
+    player:Kick("🚫 Unable to load the main script.")
     return
 end
-
-print("✅ Script principal chargé avec succès!")
 
 local Library = safeLoad("https://raw.githubusercontent.com/azenbest/Fluent-Renewed/main/Fluent.lua", "Fluent.lua")
 local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "SaveManager.luau")
 local InterfaceManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau", "InterfaceManager.luau")
 
 if not (Library and SaveManager and InterfaceManager) then
-    warn("❌ Une ou plusieurs bibliothèques n'ont pas pu être chargées. Arrêt du script.")
+    warn("❌ One or more libraries failed to load. Stopping script.")
     return
 end
 
-print("✅ Toutes les bibliothèques ont été chargées avec succès!")
+print("✅ All libraries loaded successfully!")
 
 local Window = Library:CreateWindow{
-    Title = "Private Script beta ",
+    Title = "Private Script Beta",
     SubTitle = "By Azen7010",
     TabWidth = 125,
     Size = UDim2.fromOffset(830, 525),
@@ -71,6 +67,7 @@ local Window = Library:CreateWindow{
     Theme = "VSC Dark High Contrast",
     MinimizeKey = Enum.KeyCode.RightControl
 }
+
 
 
 local Tabs = {

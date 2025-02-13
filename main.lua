@@ -4,34 +4,41 @@ if _G.MainScriptLoaded then
 end
 _G.MainScriptLoaded = true
 
-
-local whitelist = {
-    [2932844883] = true
-}
+local whitelist = { 2932844883 } 
 
 local player = game.Players.LocalPlayer
 local playerId = player.UserId
 
-if not whitelist[playerId] then
-    warn("❌ Access denied for Player ID: " .. playerId)
-    player:Kick("🚫 You are not whitelisted to use this script.")
+print("👤 Player ID détecté:", playerId)
+
+local isWhitelisted = false
+for _, id in ipairs(whitelist) do
+    if id == playerId then
+        isWhitelisted = true
+        break
+    end
+end
+
+if not isWhitelisted then
+    warn("❌ Accès refusé pour l'ID:", playerId)
+    player:Kick("🚫 Vous n'êtes pas autorisé à utiliser ce script.")
     return
 end
 
-print("✅ Player ID " .. playerId .. " is whitelisted. Loading script...")
+print("✅ ID " .. playerId .. " autorisé. Chargement du script...")
 
 local function safeLoad(url, name)
-    print("🔄 Loading: " .. name)
+    print("🔄 Chargement: " .. name)
     local success, result = pcall(function()
         return loadstring(game:HttpGet(url))()
     end)
 
     if not success then
-        warn("❌ Failed to load: " .. name .. " - " .. tostring(result))
+        warn("❌ Échec du chargement: " .. name .. " - " .. tostring(result))
         return nil
     end
 
-    print("✅ " .. name .. " loaded successfully!")
+    print("✅ " .. name .. " chargé avec succès!")
     return result
 end
 
@@ -41,23 +48,23 @@ local mainSuccess, mainResult = pcall(function()
 end)
 
 if not mainSuccess then
-    warn("❌ Error loading main script: " .. tostring(mainResult))
-    player:Kick("❌ Main script failed to load\nError: " .. tostring(mainResult))
+    warn("❌ Erreur lors du chargement du script principal: " .. tostring(mainResult))
+    player:Kick("❌ Échec du chargement du script principal\nErreur: " .. tostring(mainResult))
     return
 end
 
-print("✅ Main script loaded successfully!")
+print("✅ Script principal chargé avec succès!")
 
 local Library = safeLoad("https://raw.githubusercontent.com/azenbest/Fluent-Renewed/main/Fluent.lua", "Fluent.lua")
 local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "SaveManager.luau")
 local InterfaceManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau", "InterfaceManager.luau")
 
 if not (Library and SaveManager and InterfaceManager) then
-    warn("❌ One or more libraries failed to load. Stopping script.")
+    warn("❌ Une ou plusieurs bibliothèques n'ont pas pu être chargées. Arrêt du script.")
     return
 end
 
-print("✅ All libraries loaded successfully!")
+print("✅ Toutes les bibliothèques ont été chargées avec succès!")
 
 local Window = Library:CreateWindow{
     Title = "Private Script Best",
@@ -70,6 +77,7 @@ local Window = Library:CreateWindow{
     Theme = "VSC Dark High Contrast",
     MinimizeKey = Enum.KeyCode.RightControl
 }
+
 
 local Tabs = {
 	Main = Window:CreateTab{ Title = "Main", Icon = "phosphor-house-bold" },

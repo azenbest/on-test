@@ -29,9 +29,6 @@ if not (Library and SaveManager and InterfaceManager) then
     return
 end
 
-local player = game.Players.LocalPlayer
-local displayName = player.DisplayName
-
 local Window = Library:CreateWindow{
     Title = displayName .. " Private Script Best",
     SubTitle = "By Azen7010",

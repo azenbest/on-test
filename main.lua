@@ -13,7 +13,7 @@ local function safeLoad(url, name)
 end
 
 local success, allowed = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/azenbest/on-test/refs/heads/main/main.lua", true))()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/azenbest/on-test/refs/heads/main/main.lua"))()
 end)
 
 if not success then

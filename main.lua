@@ -80,8 +80,6 @@ local Window = Library:CreateWindow{
     MinimizeKey = Enum.KeyCode.RightControl
 }
 
-
-
 local MainSection = Tabs.Main:CreateSection("Basic Controls")
 local selectedSize = "2"
 

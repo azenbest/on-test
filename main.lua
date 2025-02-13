@@ -718,3 +718,97 @@ local kingTeleportToggle = Tabs.Rebirth:CreateToggle("KingTeleport", {
 		end
 	end
 })
+
+local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
+	Title = "Fast Rebirths",
+	Default = false,
+	Callback = function(Value)
+		isRunning = Value
+		getgenv().lift = Value
+
+		if not Value then
+			unequipAllPets()
+			return
+		end
+		-- Initial setup when toggled on
+		unequipAllPets()
+		task.wait(0.1)
+		equipUniquePet("Swift Samurai")
+		task.spawn(function()
+			while isRunning do
+				local player = game.Players.LocalPlayer
+				local rebirths = player.leaderstats.Rebirths.Value
+				local rebirthCost = 10000 + (5000 * rebirths)
+				if player.ultimatesFolder:FindFirstChild("Golden Rebirth") then
+					local goldenRebirths = player.ultimatesFolder["Golden Rebirth"].Value
+					rebirthCost = math.floor(rebirthCost * (1 - (goldenRebirths * 0.1)))
+				end
+				-- Teleport to Jungle Bar Lift
+				local machine = findMachine("Jungle Bar Lift")
+				if machine and machine:FindFirstChild("interactSeat") then
+					local character = game.Players.LocalPlayer.Character
+					if character and character:FindFirstChild("HumanoidRootPart") then
+						character.HumanoidRootPart.CFrame = machine.interactSeat.CFrame * CFrame.new(0, 3, 0)
+						task.wait(0.5)
+						pressE()
+					end
+				end
+				-- Auto rep until reaching rebirth cost
+				while isRunning and player.leaderstats.Strength.Value < rebirthCost do
+					game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
+					task.wait(0.0001)
+				end
+				-- When strength requirement met, perform rebirth sequence
+				if player.leaderstats.Strength.Value >= rebirthCost then
+					unequipAllPets()
+					task.wait(0.2)
+					equipUniquePet("Tribal Overlord")
+					task.wait(0.3)  -- Increased wait time to ensure all pets are equipped
+
+					game:GetService("ReplicatedStorage").rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+
+					unequipAllPets()
+					task.wait(0.2)
+					equipUniquePet("Swift Samurai")
+				end
+				if not isRunning then break end
+				task.wait(0.1)
+			end
+		end)
+	end
+})
+
+local Toggle = Tabs.Rebirth:CreateToggle("FrameToggle", {
+	Title = "Hide All Frames",
+	Description = "Toggle ON to hide all game frames",
+	Default = false,
+	Callback = function(Value)
+		local rSto = game:GetService("ReplicatedStorage")
+		for _, obj in pairs(rSto:GetChildren()) do
+			if obj.Name:match("Frame$") then
+				obj.Visible = not Value
+			end
+		end
+	end
+})
+
+local GrindToggle = Tabs.Rebirth:CreateToggle("SpeedGrind", {
+	Title = "Speed Grind (No Rebirth)",
+	Default = false,
+	Callback = function(Value)
+		local isGrinding = Value
+		if not Value then
+			unequipAllPets()
+			return
+		end
+		equipUniquePet("Swift Samurai")
+		for i = 1, 12 do
+			task.spawn(function()
+				while isGrinding do
+					game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
+					task.wait()
+				end
+			end)
+		end
+	end
+})

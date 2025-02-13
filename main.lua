@@ -5,7 +5,7 @@ end
 _G.MainScriptLoaded = true
 
 local whitelist = {
-   [2932844883] = true
+    [2932844883] = true 
 }
 
 local player = game.Players.LocalPlayer
@@ -15,7 +15,7 @@ print("👀 Checking Player ID: " .. playerId)
 
 if not whitelist[playerId] then
     warn("❌ Access denied for Player ID: " .. playerId)
-    player:Kick("🚫 You are not authorized to use this script.")
+    player:Kick("🚫 You are not whitelisted to use this script.")
     return
 else
     print("✅ Access granted to: " .. playerId .. ". Loading script...")
@@ -37,14 +37,23 @@ local function safeLoad(url, name)
 end
 
 local mainScriptUrl = "https://raw.githubusercontent.com/azenbest/on-test/main/main.lua"
-local mainSuccess, mainResult = pcall(function()
-    return loadstring(game:HttpGet(mainScriptUrl))()
-end)
+print("🔍 Checking main script content...")
+local mainScriptContent = game:HttpGet(mainScriptUrl, true)
 
-if not mainSuccess then
-    warn("❌ Error loading main script: " .. tostring(mainResult))
-    print("🔍 Debug: Failed to fetch script from " .. mainScriptUrl)
-    return
+if not mainScriptContent or mainScriptContent == "" then
+    warn("❌ Main script is empty or could not be loaded!")
+else
+    print("✅ Main script content loaded successfully.")
+    local mainSuccess, mainResult = pcall(function()
+        return loadstring(mainScriptContent)()
+    end)
+
+    if not mainSuccess then
+        warn("❌ Error loading the main script: " .. tostring(mainResult))
+        
+    else
+        print("✅ Main script executed successfully!")
+    end
 end
 
 local Library = safeLoad("https://raw.githubusercontent.com/azenbest/Fluent-Renewed/main/Fluent.lua", "Fluent.lua")
@@ -56,7 +65,8 @@ if not (Library and SaveManager and InterfaceManager) then
     return
 end
 
-print("✅ All libraries loaded successfully!")
+print("✅ All required libraries loaded successfully!")
+
 
 local Window = Library:CreateWindow{
     Title = "Private Script Beta",
@@ -70,21 +80,6 @@ local Window = Library:CreateWindow{
     MinimizeKey = Enum.KeyCode.RightControl
 }
 
-
-
-local Tabs = {
-	Main = Window:CreateTab{ Title = "Main", Icon = "phosphor-house-bold" },
-	AutoBuy = Window:CreateTab{ Title = "Auto Buy", Icon = "phosphor-shopping-cart-bold" },
-	AutoStuff = Window:CreateTab{ Title = "Auto Stuff", Icon = "phosphor-robot-bold" },
-	AutoFarm = Window:CreateTab{ Title = "Auto Farm", Icon = "phosphor-robot-bold" },
-	Rebirth = Window:CreateTab{ Title = "Rebirth", Icon = "phosphor-arrows-clockwise-bold" },
-	Killer = Window:CreateTab{ Title = "Killer", Icon = "phosphor-sword-bold" },
-	Crystals = Window:CreateTab{ Title = "Crystals", Icon = "phosphor-diamond-bold" },
-	Teleport = Window:CreateTab{ Title = "Teleport", Icon = "phosphor-dog-bold" },
-	Stats = Window:CreateTab{ Title = "Stats", Icon = "phosphor-sparkle-bold" },
-	Misc = Window:CreateTab{ Title = "Misc", Icon = "phosphor-map-pin-bold" },
-	Settings = Window:CreateTab{ Title = "Settings", Icon = "phosphor-sliders-bold" }
-}
 
 local MainSection = Tabs.Main:CreateSection("Basic Controls")
 local selectedSize = "2"

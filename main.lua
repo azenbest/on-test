@@ -1680,64 +1680,89 @@ local RebirthInput = Tabs.Rebirth:CreateInput("RebirthInput", {
 	end
 })
 
+local function equipBestPet(category)
+    local player = game.Players.LocalPlayer
+    local backpack = player.Backpack
+
+    for _, pet in pairs(backpack:GetChildren()) do
+        if pet:IsA("Tool") and pet:FindFirstChild("Rarity") then
+            local rarity = pet.Rarity.Value
+            if category == "training" and rarity == "Neon" then
+                pet.Parent = player.Character  
+                task.wait(0.1)
+            elseif category == "rebirth" and rarity == "Legendary" then
+                pet.Parent = player.Character  
+                task.wait(0.1)
+            end
+        end
+    end
+end
+
 local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
-	Title = "Fast Rebirths",
-	Default = false,
-	Callback = function(Value)
-		isRunning = Value
-		getgenv().lift = Value
+    Title = "Fast Rebirths",
+    Default = false,
+    Callback = function(Value)
+        isRunning = Value
+        getgenv().lift = Value
 
-		if not Value then
-			unequipAllPets()
-			return
-		end
-		-- Initial setup when toggled on
-		unequipAllPets()
-		task.wait(0.1)
-		equipUniquePet("Swift Samurai")
-		task.spawn(function()
-			while isRunning do
-				local player = game.Players.LocalPlayer
-				local rebirths = player.leaderstats.Rebirths.Value
-				local rebirthCost = 10000 + (5000 * rebirths)
-				if player.ultimatesFolder:FindFirstChild("Golden Rebirth") then
-					local goldenRebirths = player.ultimatesFolder["Golden Rebirth"].Value
-					rebirthCost = math.floor(rebirthCost * (1 - (goldenRebirths * 0.1)))
-				end
-				-- Teleport to Jungle Bar Lift
-				local machine = findMachine("Jungle Bar Lift")
-				if machine and machine:FindFirstChild("interactSeat") then
-					local character = game.Players.LocalPlayer.Character
-					if character and character:FindFirstChild("HumanoidRootPart") then
-						character.HumanoidRootPart.CFrame = machine.interactSeat.CFrame * CFrame.new(0, 3, 0)
-						task.wait(0.5)
-						pressE()
-					end
-				end
-				-- Auto rep until reaching rebirth cost
-				while isRunning and player.leaderstats.Strength.Value < rebirthCost do
-					game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
-					task.wait(0.0001)
-				end
-				-- When strength requirement met, perform rebirth sequence
-				if player.leaderstats.Strength.Value >= rebirthCost then
-					unequipAllPets()
-					task.wait(0.2)
-					equipUniquePet("Tribal Overlord")
-					task.wait(0.3)  -- Increased wait time to ensure all pets are equipped
+        if not Value then
+            unequipAllPets()
+            return
+        end
 
-					game:GetService("ReplicatedStorage").rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+        unequipAllPets()
+        task.wait(0.1)
+        equipBestPet("training") 
 
-					unequipAllPets()
-					task.wait(0.2)
-					equipUniquePet("Swift Samurai")
-				end
-				if not isRunning then break end
-				task.wait(0.1)
-			end
-		end)
-	end
+        task.spawn(function()
+            while isRunning do
+                local player = game.Players.LocalPlayer
+                local rebirths = player.leaderstats.Rebirths.Value
+                local rebirthCost = 10000 + (5000 * rebirths)
+
+                if player.ultimatesFolder:FindFirstChild("Golden Rebirth") then
+                    local goldenRebirths = player.ultimatesFolder["Golden Rebirth"].Value
+                    rebirthCost = math.floor(rebirthCost * (1 - (goldenRebirths * 0.1)))
+                end
+
+               
+                local machine = findMachine("Jungle Bar Lift")
+                if machine and machine:FindFirstChild("interactSeat") then
+                    local character = player.Character
+                    if character and character:FindFirstChild("HumanoidRootPart") then
+                        character.HumanoidRootPart.CFrame = machine.interactSeat.CFrame * CFrame.new(0, 3, 0)
+                        task.wait(0.5)
+                        pressE()
+                    end
+                end
+
+                
+                while isRunning and player.leaderstats.Strength.Value < rebirthCost do
+                    game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
+                    task.wait(0.05) 
+                end
+
+                -- Rebirth
+                if player.leaderstats.Strength.Value >= rebirthCost then
+                    unequipAllPets()
+                    task.wait(0.2)
+                    equipBestPet("rebirth") 
+                    task.wait(0.3)
+
+                    game:GetService("ReplicatedStorage").rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+
+                    unequipAllPets()
+                    task.wait(0.2)
+                    equipBestPet("training") 
+                end
+
+                if not isRunning then break end
+                task.wait(0.1)
+            end
+        end)
+    end
 })
+
 
 local Toggle = Tabs.Rebirth:CreateToggle("FrameToggle", {
 	Title = "Hide All Frames",

@@ -1,33 +1,43 @@
 local function safeLoad(url, name)
+    print("🔄 Loading: " .. name)
     local success, result = pcall(function()
         return loadstring(game:HttpGetAsync(url))()
     end)
 
     if not success then
-        warn("Erreur de chargement : " .. name .. " - " .. tostring(result))
-        game.Players.LocalPlayer:Kick("❌ Impossible de charger " .. name .. "\nErreur : " .. tostring(result))
+        warn("❌ Failed to load: " .. name .. " - " .. tostring(result))
+        game.Players.LocalPlayer:Kick("❌ Unable to load " .. name .. "\nError: " .. tostring(result))
         return nil
     end
 
+    print("✅ " .. name .. " loaded successfully!")
     return result
 end
 
+print("🔄 Loading main script...")
 local success, allowed = pcall(function()
     return loadstring(game:HttpGet("https://raw.githubusercontent.com/azenbest/on-test/refs/heads/main/main.lua"))()
 end)
 
 if not success then
-    game.Players.LocalPlayer:Kick("❌ Impossible de charger le script principal\nErreur : " .. tostring(allowed))
+    warn("❌ Failed to load main script: " .. tostring(allowed))
+    game.Players.LocalPlayer:Kick("❌ Unable to load the main script\nError: " .. tostring(allowed))
     return
 end
+
+print("✅ Main script loaded successfully!")
 
 local Library = safeLoad("https://raw.githubusercontent.com/azenbest/Fluent-Renewed/refs/heads/main/Fluent.lua", "Fluent.lua")
 local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "SaveManager.luau")
 local InterfaceManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau", "InterfaceManager.luau")
 
 if not (Library and SaveManager and InterfaceManager) then
+    print("❌ One or more libraries failed to load. Stopping script.")
     return
 end
+
+print("✅ All libraries loaded successfully!")
+
 
 local Window = Library:CreateWindow{
     Title = displayName .. " Private Script Best",

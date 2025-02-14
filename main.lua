@@ -9,7 +9,7 @@ local whitelist = { 2932844883, 2002271267 }
 local player = game.Players.LocalPlayer
 local playerId = player.UserId
 
-print("👤 Player ID détecté:", playerId)
+print("👤 Detected Player ID:", playerId)
 
 local isWhitelisted = false
 for _, id in ipairs(whitelist) do
@@ -20,25 +20,25 @@ for _, id in ipairs(whitelist) do
 end
 
 if not isWhitelisted then
-    warn("❌ Accès refusé pour l'ID:", playerId)
-    player:Kick("🚫 Vous n'êtes pas autorisé à utiliser ce script.")
+    warn("❌ Access denied for ID:", playerId)
+    player:Kick("🚫 You are not authorized to use this script.")
     return
 end
 
-print("✅ ID " .. playerId .. " autorisé. Chargement du script...")
+print("✅ ID " .. playerId .. " authorized. Loading script...")
 
 local function safeLoad(url, name)
-    print("🔄 Chargement: " .. name)
+    print("🔄 Loading: " .. name)
     local success, result = pcall(function()
         return loadstring(game:HttpGet(url))()
     end)
 
     if not success then
-        warn("❌ Échec du chargement: " .. name .. " - " .. tostring(result))
+        warn("❌ Failed to load: " .. name .. " - " .. tostring(result))
         return nil
     end
 
-    print("✅ " .. name .. " chargé avec succès!")
+    print("✅ " .. name .. " loaded successfully!")
     return result
 end
 
@@ -48,27 +48,26 @@ local mainSuccess, mainResult = pcall(function()
 end)
 
 if not mainSuccess then
-    warn("❌ Erreur lors du chargement du script principal: " .. tostring(mainResult))
-    player:Kick("❌ Échec du chargement du script principal\nErreur: " .. tostring(mainResult))
+    warn("❌ Error loading the main script: " .. tostring(mainResult))
+    player:Kick("❌ Failed to load the main script\nError: " .. tostring(mainResult))
     return
 end
 
-print("✅ Script principal chargé avec succès!")
+print("✅ Main script loaded successfully!")
 
 local Library = safeLoad("https://raw.githubusercontent.com/azenbest/Fluent-Renewed/main/Fluent.lua", "Fluent.lua")
 local SaveManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/SaveManager.luau", "SaveManager.luau")
 local InterfaceManager = safeLoad("https://raw.githubusercontent.com/ActualMasterOogway/Fluent-Renewed/master/Addons/InterfaceManager.luau", "InterfaceManager.luau")
 
 if not (Library and SaveManager and InterfaceManager) then
-    warn("❌ Une ou plusieurs bibliothèques n'ont pas pu être chargées. Arrêt du script.")
+    warn("❌ One or more libraries failed to load. Stopping script.")
     return
 end
 
-print("✅ Toutes les bibliothèques ont été chargées avec succès!")
+print("✅ All libraries loaded successfully!")
 
--- 🏠 Création de la fenêtre principale
 local Window = Library:CreateWindow{
-    Title = "Private Script Best",
+    Title = "Private Script Beta",
     SubTitle = "By Azen7010",
     TabWidth = 125,
     Size = UDim2.fromOffset(830, 525),
@@ -77,58 +76,28 @@ local Window = Library:CreateWindow{
     Acrylic = true,
     Theme = "VSC Dark High Contrast",
     MinimizeKey = Enum.KeyCode.RightControl
+}
+
 local Tabs = {
-	Main = Window:CreateTab{
-		Title = "Main",
-		Icon = "phosphor-house-bold"
-	},
-	AutoBuy = Window:CreateTab{
-		Title = "Auto Buy",
-		Icon = "phosphor-shopping-cart-bold"
-	},
-	AutoStuff = Window:CreateTab{
-		Title = "Auto Stuff",
-		Icon = "phosphor-robot-bold"
-	},
-	AutoFarm = Window:CreateTab{
-		Title = "Auto Farm",
-		Icon = "phosphor-robot-bold"
-	},
-	Rebirth = Window:CreateTab{
-		Title = "Rebirth",
-		Icon = "phosphor-arrows-clockwise-bold"
-	},
-	Killer = Window:CreateTab{
-		Title = "Killer",
-		Icon = "phosphor-sword-bold"
-	},
-	Crystals = Window:CreateTab{
-		Title = "Crystals",
-		Icon = "phosphor-diamond-bold"
-	},
-	Teleport = Window:CreateTab{
-		Title = "Teleport",
-		Icon = "phosphor-dog-bold"
-	},
-	Stats = Window:CreateTab{
-		Title = "Stats",
-		Icon = "phosphor-sparkle-bold"
-	},
-	Misc = Window:CreateTab{
-		Title = "Misc",
-		Icon = "phosphor-map-pin-bold"
-	},
-	Settings = Window:CreateTab{
-		Title = "Settings",
-		Icon = "phosphor-sliders-bold"
-	}
+    Main = Window:CreateTab{ Title = "Main", Icon = "phosphor-house-bold" },
+    AutoBuy = Window:CreateTab{ Title = "Auto Buy", Icon = "phosphor-shopping-cart-bold" },
+    AutoStuff = Window:CreateTab{ Title = "Auto Stuff", Icon = "phosphor-robot-bold" },
+    AutoFarm = Window:CreateTab{ Title = "Auto Farm", Icon = "phosphor-robot-bold" },
+    Rebirth = Window:CreateTab{ Title = "Rebirth", Icon = "phosphor-arrows-clockwise-bold" },
+    Killer = Window:CreateTab{ Title = "Killer", Icon = "phosphor-sword-bold" },
+    Crystals = Window:CreateTab{ Title = "Crystals", Icon = "phosphor-diamond-bold" },
+    Teleport = Window:CreateTab{ Title = "Teleport", Icon = "phosphor-dog-bold" },
+    Stats = Window:CreateTab{ Title = "Stats", Icon = "phosphor-sparkle-bold" },
+    Misc = Window:CreateTab{ Title = "Misc", Icon = "phosphor-map-pin-bold" },
+    Settings = Window:CreateTab{ Title = "Settings", Icon = "phosphor-sliders-bold" }
 }
 
 local Options = Library.Options  
+
 local MainSection = Tabs.Main:CreateSection("Basic Controls")
 local selectedSize = "2"
 
-local Input = MainSection:AddInput("SizeChanger", {
+local Input = MainSection:CreateInput{
     Title = "Size Changer",
     Description = "Enter Size",
     Default = "2",
@@ -141,7 +110,8 @@ local Input = MainSection:AddInput("SizeChanger", {
             game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
         end
     end
-})
+}
+
 
 local Toggle = Tabs.Main:CreateToggle("AutoSize", {
 	Title = "Auto Set Size",
@@ -1737,7 +1707,7 @@ local function equipBestPet(category)
 end
 
 local MainToggle = Tabs.Rebirth:CreateToggle("UltimateFarm", {
-    Title = "Fast Rebirths",
+    Title = "Fast Rebirths (work is just not fast wait )",
     Default = false,
     Callback = function(Value)
         isRunning = Value
@@ -1817,7 +1787,7 @@ local function equipBestNeonPet()
 end
 
 local GrindToggle = Tabs.Rebirth:CreateToggle("SpeedGrind", {
-    Title = "Speed Grind (No Rebirth)",
+    Title = "Speed Grind (No Rebirth) (not work)",
     Default = false,
     Callback = function(Value)
         local isGrinding = Value
